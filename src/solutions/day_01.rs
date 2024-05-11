@@ -115,17 +115,18 @@ mod tests {
                         xtwone3four
                         4nineeightseven2
                         zoneight234
-                        7pqrstsixteen";
+                        7pqrstsixteen
+                        eightwo2twone";
 
     #[test]
     fn test_solution_a() {
         assert_eq!(run_a(DATA), 142);
-        assert_eq!(run_a(DATA2), 209);
+        assert_eq!(run_a(DATA2), 231);
     }
 
     #[test]
     fn test_solution_b() {
         assert_eq!(run_b(DATA), 142);
-        assert_eq!(run_b(DATA2), 281);
+        assert_eq!(run_b(DATA2), 362);
     }
 }
