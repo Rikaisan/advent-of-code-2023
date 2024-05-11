@@ -1,4 +1,5 @@
 use std::{fs::File, io::Read};
+use crate::utils::num_from_chars;
 
 pub fn run_a(data: impl Into<String>) -> u32 {
     data.into()
@@ -93,19 +94,6 @@ pub fn run_all() {
         .expect("Error reading input file for day 01");
     println!("Day 01, exercise A answer: {}", run_a(&buf));
     println!("Day 01, exercise B answer: {}", run_b(&buf));
-}
-
-/// This function creates a numeric representation from two `char` digits, it works by
-/// using the ASCII value of the character and subtracting the ASCII value of `0` to it
-/// to bring the number relative to `0`
-/// 
-/// ## Safety
-/// Callers of this function are responsible that these preconditions are satisfied:
-/// - `d1` and `d2` are in the range `0..9`
-/// 
-/// Failing that means the returned number can overflow.
-unsafe fn num_from_chars(d1: char, d2: char) -> u8 {
-    (d1 as u8 - b'0') * 10 + d2 as u8 - b'0'
 }
 
 #[cfg(test)]
