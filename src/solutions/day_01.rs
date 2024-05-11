@@ -4,7 +4,6 @@ pub fn run_a(data: impl Into<String>) -> u32 {
     data.into()
         .lines()
         .map(|s: &str| {
-            let s = s.trim();
             unsafe {
                 num_from_chars(
                     s.chars().find(|c| c.is_ascii_digit()).unwrap_or('0'),
@@ -113,6 +112,7 @@ unsafe fn num_from_chars(d1: char, d2: char) -> u8 {
 mod tests {
     use super::*;
 
+    // These include the indentation spaces for some reason even though they are not raw strings, but doesn't matter for testing purposes.
     const DATA: &str = "1abc2
                         pqr3stu8vwx
                         a1b2c3d4e5f
