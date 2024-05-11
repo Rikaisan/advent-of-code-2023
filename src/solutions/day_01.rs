@@ -1,12 +1,12 @@
 use std::{fs::File, io::Read};
-use crate::utils::num_from_chars;
+use crate::utils;
 
 pub fn run_a(data: impl Into<String>) -> u32 {
     data.into()
         .lines()
         .map(|s: &str| {
             unsafe {
-                num_from_chars(
+                utils::num_from_chars(
                     s.chars().find(|c| c.is_ascii_digit()).unwrap_or('0'),
                     s.chars().rev().find(|c| c.is_ascii_digit()).unwrap_or('0')
                 ) as u32
@@ -125,18 +125,5 @@ mod tests {
     fn test_solution_b() {
         assert_eq!(run_b(DATA), 142);
         assert_eq!(run_b(DATA2), 362);
-    }
-
-
-    #[test]
-    fn test_num_from_chars() {
-        unsafe {
-            assert_eq!(num_from_chars('0', '0'), 0);
-            assert_eq!(num_from_chars('0', '1'), 1);
-            assert_eq!(num_from_chars('1', '0'), 10);
-            assert_eq!(num_from_chars('8', '0'), 80);
-            assert_eq!(num_from_chars('9', '5'), 95);
-            assert_eq!(num_from_chars('3', '6'), 36);
-        }
     }
 }

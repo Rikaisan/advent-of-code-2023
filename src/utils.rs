@@ -22,3 +22,20 @@
 pub unsafe fn num_from_chars(d1: char, d2: char) -> u8 {
     (d1 as u8 - b'0') * 10 + d2 as u8 - b'0'
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_num_from_chars() {
+        unsafe {
+            assert_eq!(num_from_chars('0', '0'), 0);
+            assert_eq!(num_from_chars('0', '1'), 1);
+            assert_eq!(num_from_chars('1', '0'), 10);
+            assert_eq!(num_from_chars('8', '0'), 80);
+            assert_eq!(num_from_chars('9', '5'), 95);
+            assert_eq!(num_from_chars('3', '6'), 36);
+        }
+    }
+}
