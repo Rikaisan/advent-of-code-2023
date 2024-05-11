@@ -18,6 +18,7 @@ pub fn run_a(data: impl Into<String>) -> i32 {
         }).sum()
 }
 
+// TODO: Find a way to refactor this, can't run a simple loop per 'number_name -> key' on a hashmap or it won't give the right answer.
 pub fn run_b(data: impl Into<String>) -> i32 {
     data.into()
     .split('\n')
