@@ -1,27 +1,23 @@
 use std::{fs::File, io::Read};
 
-pub fn run_a(data: impl Into<String>) -> i32 {
+pub fn run_a(data: impl Into<String>) -> u32 {
     data.into()
-        .split('\n')
-        .filter_map(|s: &str| {
-            let numbers: Vec<char> = s.trim()
-                                    .chars()
-                                    .filter(|c: &char| c.is_numeric())
-                                    .collect();
-            if !numbers.is_empty() {
-                let mut num = String::new();
-                num.push(*numbers.first().unwrap());
-                num.push(*numbers.last().unwrap());
-                return Some(num.parse::<i32>().unwrap());
+        .lines()
+        .map(|s: &str| {
+            let s = s.trim();
+            unsafe {
+                num_from_chars(
+                    s.chars().find(|c| c.is_ascii_digit()).unwrap_or('0'),
+                    s.chars().rev().find(|c| c.is_ascii_digit()).unwrap_or('0')
+                ) as u32
             }
-            return None;
         }).sum()
 }
 
 // TODO: Find a way to refactor this, can't run a simple loop per 'number_name -> key' on a hashmap or it won't give the right answer.
 pub fn run_b(data: impl Into<String>) -> i32 {
     data.into()
-    .split('\n')
+    .lines()
     .filter_map(|s: &str| {
         let chars: Vec<char> = s.trim().chars().collect();
         let mut replaced = String::new();
@@ -100,6 +96,19 @@ pub fn run_all() {
     println!("Day 01, exercise B answer: {}", run_b(&buf));
 }
 
+/// This function creates a numeric representation from two `char` digits, it works by
+/// using the ASCII value of the character and subtracting the ASCII value of `0` to it
+/// to bring the number relative to `0`
+/// 
+/// ## Safety
+/// Callers of this function are responsible that these preconditions are satisfied:
+/// - `d1` and `d2` are in the range `0..9`
+/// 
+/// Failing that means the returned number can overflow.
+unsafe fn num_from_chars(d1: char, d2: char) -> u8 {
+    (d1 as u8 - b'0') * 10 + d2 as u8 - b'0'
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -128,5 +137,18 @@ mod tests {
     fn test_solution_b() {
         assert_eq!(run_b(DATA), 142);
         assert_eq!(run_b(DATA2), 362);
+    }
+
+
+    #[test]
+    fn test_num_from_chars() {
+        unsafe {
+            assert_eq!(num_from_chars('0', '0'), 0);
+            assert_eq!(num_from_chars('0', '1'), 1);
+            assert_eq!(num_from_chars('1', '0'), 10);
+            assert_eq!(num_from_chars('8', '0'), 80);
+            assert_eq!(num_from_chars('9', '5'), 95);
+            assert_eq!(num_from_chars('3', '6'), 36);
+        }
     }
 }
