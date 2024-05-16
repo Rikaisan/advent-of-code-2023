@@ -1,4 +1,3 @@
-use std::{fs::File, io::Read};
 use crate::utils;
 
 pub fn run_a(data: impl Into<String>) -> u32 {
@@ -52,13 +51,10 @@ pub fn run_b(data: impl Into<String>) -> u32 {
 }
 
 pub fn run_all() {
-    let mut buf = String::new();
-    File::open("input/day_01.txt")
-        .expect("Error opening input file for day 01")
-        .read_to_string(&mut buf)
-        .expect("Error reading input file for day 01");
-    println!("Day 01, exercise A answer: {}", run_a(&buf));
-    println!("Day 01, exercise B answer: {}", run_b(&buf));
+    const DAY: u8 = 1;
+    let buf = utils::read_input_from_day(DAY);
+    println!("Day {:02}, exercise A answer: {}", DAY, run_a(&buf));
+    println!("Day {:02}, exercise B answer: {}", DAY, run_b(&buf));
 }
 
 #[cfg(test)]
