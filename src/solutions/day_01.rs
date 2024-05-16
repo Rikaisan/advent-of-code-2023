@@ -15,74 +15,39 @@ pub fn run_a(data: impl Into<String>) -> u32 {
 }
 
 // TODO: Find a way to refactor this, can't run a simple loop per 'number_name -> key' on a hashmap or it won't give the right answer.
-pub fn run_b(data: impl Into<String>) -> i32 {
+pub fn run_b(data: impl Into<String>) -> u32 {
+    const NUMBERS: [&str; 9] = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+
     data.into()
     .lines()
-    .filter_map(|s: &str| {
-        let chars: Vec<char> = s.trim().chars().collect();
-        let mut replaced = String::new();
-        let mut current_idx = 0;
-        loop {
-            let char = chars.get(current_idx);
-            match char {
-                Some(c) => match c {
-                    'o' => match chars.get(current_idx..current_idx + 3) {
-                        Some(word) => if word.iter().collect::<String>().as_str() == "one" { replaced.push('1') },
-                        None => (),
-                    },
-                    't' => match chars.get(current_idx..current_idx + 3) {
-                        Some(word) => if word.iter().collect::<String>().as_str() == "two" { replaced.push('2') } else {
-                            match chars.get(current_idx..current_idx + 5) {
-                                Some(word) => if word.iter().collect::<String>().as_str() == "three" { replaced.push('3') },
-                                None => (),
-                            }
-                        },
-                        None => (),
-                    },
-                    'f' => match chars.get(current_idx..current_idx + 4) {
-                        Some(word) => match word.iter().collect::<String>().as_str() { 
-                            "four" => { replaced.push('4') },
-                            "five" => { replaced.push('5') },
-                            _ => (),
-                        } 
-                        None => (),
-                    },
-                    's' => match chars.get(current_idx..current_idx + 3) {
-                        Some(word) => if word.iter().collect::<String>().as_str() == "six" { replaced.push('6') } else {
-                            match chars.get(current_idx..current_idx + 5) {
-                                Some(word) => if word.iter().collect::<String>().as_str() == "seven" { replaced.push('7') },
-                                None => (),
-                            }
-                        },
-                        None => (),
-                    },
-                    'e' => match chars.get(current_idx..current_idx + 5) {
-                        Some(word) => if word.iter().collect::<String>().as_str() == "eight" { replaced.push('8') },
-                        None => (),
-                    },
-                    'n' => match chars.get(current_idx..current_idx + 4) {
-                        Some(word) => if word.iter().collect::<String>().as_str() == "nine" { replaced.push('9') },
-                        None => (),
-                    },
-                    _ => (),
-                },
-                None => break,
-            }
-            replaced.push(*char.unwrap());
-            current_idx += 1;
+    .map(|s: &str| {
+        unsafe {
+            utils::num_from_chars(
+                s.chars()
+                .enumerate()
+                .find_map(|(idx, c)| { 
+                    c.is_ascii_digit()
+                    .then_some(c)
+                    .or(NUMBERS.iter()
+                        .enumerate()
+                        .find(|(_, num)| s[idx..].starts_with(**num))
+                        .map(|(n_idx, _)| (n_idx as u8 + 1 as u8 + b'0') as char)
+                    )
+                }).unwrap_or('0'),
+                s.chars()
+                .rev()
+                .enumerate()
+                .find_map(|(idx, c)| { 
+                    c.is_ascii_digit()
+                    .then_some(c)
+                    .or(NUMBERS.iter()
+                        .enumerate()
+                        .find(|(_, num)| s[s.len() - 1 - idx..].starts_with(**num))
+                        .map(|(n_idx, _)| (n_idx as u8 + 1 as u8 + b'0') as char) 
+                    )
+                }).unwrap_or('0')
+            ) as u32
         }
-
-        let numbers: Vec<char> = replaced
-                                .chars()
-                                .filter(|c: &char| c.is_numeric())
-                                .collect();
-        if !numbers.is_empty() {
-            let mut num = String::new();
-            num.push(*numbers.first().unwrap());
-            num.push(*numbers.last().unwrap());
-            return Some(num.parse::<i32>().unwrap());
-        }
-        return None;
     }).sum()
 }
 
