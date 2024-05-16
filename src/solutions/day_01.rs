@@ -13,7 +13,6 @@ pub fn run_a(data: impl Into<String>) -> u32 {
         }).sum()
 }
 
-// TODO: Find a way to refactor this, can't run a simple loop per 'number_name -> key' on a hashmap or it won't give the right answer.
 pub fn run_b(data: impl Into<String>) -> u32 {
     const NUMBERS: [&str; 9] = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
 
